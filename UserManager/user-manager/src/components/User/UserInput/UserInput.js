@@ -1,61 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styles from "./UserInput.module.css";
 import Card from "../../UI/Card/Card";
 import SubmitButton from "../../UI/Buttons/SubmitButton";
-import ErrorModule from "../../UI/ErrorModule/ErrorModule";
-const UserInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredAge, setEnteredAge] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showError, setShowError] = useState();
+import ErrorModal from "../../UI/ErrorModal/ErrorModal";
 
-  
-  const handleOkay = () => {
-    console.log("Okay clicked");
-    setShowError(false);
+const UserInput = (props) => {
+
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleConfirm = () => {
     setErrorMessage("");
   };
 
-  const OnSubmitHandler = (event) => {
+  const onSubmitHandler = (event) => {
     event.preventDefault();
-    if (enteredName.trim().length === 0 || enteredAge.trim().length === 0) {
-        setErrorMessage("Please enter a valid name and age (non-empty values).");
-        setShowError(true);
-        return
-      } else if (enteredAge < 1) {
-        setErrorMessage("Please enter a valid age (> 0).");
-        setShowError(true);
-        return
+    const enteredUserName = nameInputRef.current.value;
+    const enteredUserAge = ageInputRef.current.value;
+
+    if (enteredUserName.trim().length === 0 || enteredUserAge.trim().length === 0) {
+      setErrorMessage("Please enter a valid name and age (non-empty values).");
+      return;
+    } else if (enteredUserAge < 1) {
+      setErrorMessage("Please enter a valid age (> 0).");
+      return;
     } else {
-
-      
-        props.onAddUser(enteredName, enteredAge);
-        setEnteredName("");
-        setEnteredAge("");
-  };
-  };
-  const handleNameChange = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const handleAgeChange = (event) => {
-    setEnteredAge(event.target.value);
+      props.onAddUser(enteredUserName, enteredUserAge);
+      nameInputRef.current.value = ""; // Rarely used, in senerios where you want to clear the input field after submit is clicked. Can also be done with useState().
+      ageInputRef.current.value = ""; // Using refs like this manipulates the DOM directly, which is not recommended.
+    }
   };
 
   return (
-    <div>
-      {showError && (<ErrorModule message={errorMessage} onClick={handleOkay} title="Invalid input" />)}
+    <React.Fragment>
+      {errorMessage && (
+        <ErrorModal
+          message={errorMessage}
+          onClick={handleConfirm}
+          title="Invalid input"
+        />
+      )}
       <Card className={styles.form}>
-        <form onSubmit={OnSubmitHandler}>
-        <label>Username</label>
-        <input type="text" value={enteredName} onChange={handleNameChange} />
-        <label>Age (years)</label>
-        <input type="number" value={enteredAge} onChange={handleAgeChange} />
-        <SubmitButton type="submit" displayText="Add User" />
-    </form>
+        <form onSubmit={onSubmitHandler}>
+          <label>Username</label>
+          <input
+            id="username"
+            type="text"
+            ref={nameInputRef}
+          />
+          <label>Age (years)</label>
+          <input
+            id="age"
+            type="number"
+            ref={ageInputRef}
+          />
+          <SubmitButton type="submit" displayText="Add User" />
+        </form>
       </Card>
-    </div>
-      
+    </React.Fragment>
   );
 };
 

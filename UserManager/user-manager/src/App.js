@@ -5,7 +5,7 @@ import UserList from "./components/User/UserList/UserList";
 
 const App = () => {
   const [users, setUsers] = useState([]);
-  
+
   const addUserHandler = (name, age) => {
     setUsers((prevUsers) => {
       const updatedUsers = [...prevUsers];
@@ -17,23 +17,20 @@ const App = () => {
       return updatedUsers;
     });
   };
-  
-  
-    let content = (
-      <p style={{ textAlign: "center" }}>No users found. Maybe add one?</p>
-    );
-  
-    if (users.length > 0) {
-      content = <UserList users={users} />;
-    }
+
+  let content = (
+    <p style={{ textAlign: "center" }}>No users found. Maybe add one?</p>
+  );
+
+  if (users.length > 0) {
+    content = <UserList users={users} />;
+  }
   return (
-    <div className="app">
+    <React.Fragment>
+      <UserInput onAddUser={addUserHandler} />
 
-        <UserInput onAddUser={addUserHandler} />
-
-
-        {content}
-    </div>
+      {content}
+    </React.Fragment>
   );
 };
 export default App;
