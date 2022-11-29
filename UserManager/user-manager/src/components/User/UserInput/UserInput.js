@@ -5,7 +5,6 @@ import SubmitButton from "../../UI/Buttons/SubmitButton";
 import ErrorModal from "../../UI/ErrorModal/ErrorModal";
 
 const UserInput = (props) => {
-
   const nameInputRef = useRef();
   const ageInputRef = useRef();
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,7 +18,10 @@ const UserInput = (props) => {
     const enteredUserName = nameInputRef.current.value;
     const enteredUserAge = ageInputRef.current.value;
 
-    if (enteredUserName.trim().length === 0 || enteredUserAge.trim().length === 0) {
+    if (
+      enteredUserName.trim().length === 0 ||
+      enteredUserAge.trim().length === 0
+    ) {
       setErrorMessage("Please enter a valid name and age (non-empty values).");
       return;
     } else if (enteredUserAge < 1) {
@@ -44,17 +46,9 @@ const UserInput = (props) => {
       <Card className={styles.form}>
         <form onSubmit={onSubmitHandler}>
           <label>Username</label>
-          <input
-            id="username"
-            type="text"
-            ref={nameInputRef}
-          />
+          <input id="username" type="text" ref={nameInputRef} />
           <label>Age (years)</label>
-          <input
-            id="age"
-            type="number"
-            ref={ageInputRef}
-          />
+          <input id="age" type="number" ref={ageInputRef} />
           <SubmitButton type="submit" displayText="Add User" />
         </form>
       </Card>
